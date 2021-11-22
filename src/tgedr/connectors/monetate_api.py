@@ -115,12 +115,12 @@ class MonetateApi:
         logger.info(f"[MonetateApi.get_record] out => {result}")
         return result
 
-    def post_record(self, schema: str, record: dict, content_type: str = "application/json") -> List:
-        logger.info(f"[MonetateApi.post_record] in ({schema},{record})")
+    def post_record(self, schema: str, records: List[dict], content_type: str = "application/json") -> List:
+        logger.info(f"[MonetateApi.post_record] in ({schema},{records})")
         result = None
         with self.__valid_token():
             try:
-                payload = json.dumps({"schema_rows": [record]})
+                payload = json.dumps({"schema_rows": records})
                 url = f"{MonetateApi.__DATA_URL}data/{schema}/"
 
                 headers = self.__default_request_header()

@@ -60,5 +60,38 @@ def test_post_record():
     print(f"old record: {record}")
     record["probability"] = record["probability"] + 0.1
     print(f"new record: {record}")
-    response = o.post_record(schema="next buy reco semi known users", record=record)
+    response = o.post_record(schema="next buy reco semi known users", records=[record])
     assert response["rows"][0] == record
+
+
+def test_post_records():
+
+    key = os.environ["MONETATE_KEY"]
+    user = os.environ.get("MONETATE_USER")
+    o = MonetateApi(username=user, private_key=key)
+
+    records = [
+        {
+            "category": "rings",
+            "is_fallback": False,
+            "probability": 1.4102414012,
+            "country": "US",
+            "model_rank": "champion",
+            "extraction": 2021102909.0,
+            "model_version": 2.0,
+            "cookie_id": "MCMID|00002812577406158014239605433479468079",
+        },
+        {
+            "category": "bracelets",
+            "is_fallback": True,
+            "probability": 0.4,
+            "country": "US",
+            "model_rank": "champion",
+            "extraction": 2021112209.0,
+            "model_version": 2.0,
+            "cookie_id": "MCMID|0000281257740615801423960543347946XPTO",
+        },
+    ]
+
+    response = o.post_record(schema="next buy reco semi known users", records=records)
+    assert 2 == len(response["rows"])
