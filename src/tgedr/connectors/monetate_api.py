@@ -82,9 +82,10 @@ class MonetateApi:
         result = None
         with self.__valid_token():
             try:
-                query_string = {'row_count': True}
-                response = requests.get(f"{MonetateApi.__DATA_URL}schema/", params=query_string,
-                                        headers=self.__default_request_header())
+                query_string = {"row_count": True}
+                response = requests.get(
+                    f"{MonetateApi.__DATA_URL}schema/", params=query_string, headers=self.__default_request_header()
+                )
                 if not response.ok:
                     logger.error(f"[MonetateApi.get_schemas] got status code => {response.status_code}")
                     raise ConnectorException("response was not ok")
@@ -101,10 +102,9 @@ class MonetateApi:
         result = None
         with self.__valid_token():
             try:
-                query_string = {'id': record_id}
+                query_string = {"id": record_id}
                 url = f"{MonetateApi.__DATA_URL}data/{schema}/"
-                response = requests.get(url, params=query_string,
-                                        headers=self.__default_request_header())
+                response = requests.get(url, params=query_string, headers=self.__default_request_header())
                 if not response.ok:
                     logger.error(f"[MonetateApi.get_record] got status code => {response.status_code}")
                     raise ConnectorException("response was not ok")
@@ -137,5 +137,3 @@ class MonetateApi:
                 raise ConnectorException("could not post record") from x
         logger.info(f"[MonetateApi.post_record] out => {result}")
         return result
-
-
