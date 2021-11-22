@@ -123,7 +123,7 @@ publish()
 test()
 {
     info "[test|in]"
-    python -m pytest --durations=0 --cov=src --junitxml=test-results.xml --cov-report=xml --cov-report=html
+    python -m pytest -vv --durations=0 --cov=src --junitxml=test-results.xml --cov-report=xml --cov-report=html
     return_value="$?"
     info "[test|out] => ${return_value}"
     [[ ! "$return_value" -eq "0" ]] && exit 1
