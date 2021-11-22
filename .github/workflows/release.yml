@@ -22,6 +22,8 @@ jobs:
       run: ./helper.sh code_check
     - name: run tests
       run: ./helper.sh test
+      env:
+        MONETATE_KEY: ${{ secrets.MONETATE_KEY }}
   build:
     runs-on: ubuntu-latest
     needs: test
