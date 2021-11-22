@@ -84,6 +84,7 @@ reqs()
 code_check()
 {
     info "[code_check|in]"
+    pip list --outdated
     autoflake --in-place --remove-unused-variables --check -r src test && \
     isort -rc src test && \
     black src test -t py37 --line-length=120
