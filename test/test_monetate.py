@@ -1,9 +1,39 @@
+import datetime
 import os
 
 import pytest
+from faker import Faker
 
 from tgedr.connectors.common import ConnectorException
 from tgedr.connectors.monetate_api import MonetateApi
+
+Faker.seed(0)
+fake = Faker()
+
+
+DELTA_TEST_LENGTH = 100 * 1000
+
+
+@pytest.fixture
+def delta_test_set():
+
+    numbers = [i for i in range(DELTA_TEST_LENGTH)]
+
+    entries = []
+    for i in range(DELTA_TEST_LENGTH):
+        entries.append({
+            "category": fake.random_element(elements=("rings", "bracelets", "earrings", "charms")),
+            "is_fallback": fake.boolean(chance_of_getting_true=80),
+            "probability": fake.random.random(),
+            "country": "US",
+            "model_rank": fake.random_element(elements=("champion", "wannabe", "crap")),
+            "extraction": datetime.datetime.now().timestamp(),
+            "model_version": 2.0,
+            "cookie_id": f"MCMID|00002812577406158014{numbers[i]}",
+        }
+        )
+
+    return entries
 
 
 def test_get_token_wrong_key():
@@ -31,7 +61,7 @@ def test_get_schemas():
     schemas = o.get_schemas()
     assert 0 <= schemas["count"]
 
-
+@pytest.mark.skip
 def test_get_record():
     """
     this test is based on current 'next buy reco semi known users' dataset
@@ -46,9 +76,8 @@ def test_get_record():
     )
     assert 0 <= len(response["rows"])
 
-
+@pytest.mark.skip
 def test_post_record():
-
     key = os.environ["MONETATE_KEY"]
     user = os.environ.get("MONETATE_USER")
     o = MonetateApi(username=user, private_key=key)
@@ -64,34 +93,24 @@ def test_post_record():
     assert response["rows"][0] == record
 
 
-def test_post_records():
+def test_get_history():
+    """
+    this test is based on current 'next buy reco semi known users' dataset
+    in  site 'dev.uk.pandora.net'
+    """
 
     key = os.environ["MONETATE_KEY"]
     user = os.environ.get("MONETATE_USER")
     o = MonetateApi(username=user, private_key=key)
+    schema = "next buy reco semi known users"
+    response = o.get_history(schema=schema)
+    assert 0 <= len(response["data"])
 
-    records = [
-        {
-            "category": "rings",
-            "is_fallback": False,
-            "probability": 1.4102414012,
-            "country": "US",
-            "model_rank": "champion",
-            "extraction": 2021102909.0,
-            "model_version": 2.0,
-            "cookie_id": "MCMID|00002812577406158014239605433479468079",
-        },
-        {
-            "category": "bracelets",
-            "is_fallback": True,
-            "probability": 0.4,
-            "country": "US",
-            "model_rank": "champion",
-            "extraction": 2021112209.0,
-            "model_version": 2.0,
-            "cookie_id": "MCMID|0000281257740615801423960543347946XPTO",
-        },
-    ]
 
-    response = o.post_record(schema="next buy reco semi known users", records=records)
-    assert 2 == len(response["rows"])
+@pytest.mark.skip
+def test_post_records(delta_test_set):
+    key = os.environ["MONETATE_KEY"]
+    user = os.environ.get("MONETATE_USER")
+    o = MonetateApi(username=user, private_key=key)
+    response = o.post_record(schema="next buy reco semi known users", records=delta_test_set)
+    assert "rows" in response.keys()

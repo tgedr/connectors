@@ -116,7 +116,7 @@ class MonetateApi:
         return result
 
     def post_record(self, schema: str, records: List[dict], content_type: str = "application/json") -> List:
-        logger.info(f"[MonetateApi.post_record] in ({schema},{records})")
+        logger.info(f"[MonetateApi.post_record] in ({schema},records len:{len(records)})")
         result = None
         with self.__valid_token():
             try:
@@ -135,5 +135,22 @@ class MonetateApi:
             except Exception as x:
                 logger.error(f"[MonetateApi.post_record] got exception => {x}")
                 raise ConnectorException("could not post record") from x
-        logger.info(f"[MonetateApi.post_record] out => {result}")
+        logger.info(f"[MonetateApi.post_record] out length => {len(result['rows'])}")
+        return result
+
+    def get_history(self, schema: str) -> List:
+        logger.info(f"[MonetateApi.get_history] in ({schema})")
+        result = None
+        with self.__valid_token():
+            try:
+                url = f"{MonetateApi.__DATA_URL}upload/{schema}/"
+                response = requests.get(url, headers=self.__default_request_header())
+                if not response.ok:
+                    logger.error(f"[MonetateApi.get_history] got status code => {response.status_code}")
+                    raise ConnectorException("response was not ok")
+                result = {"data": response.json()["data"]}
+            except Exception as x:
+                logger.error(f"[MonetateApi.get_history] got exception => {x}")
+                raise ConnectorException("could not get record") from x
+        logger.info(f"[MonetateApi.get_history] out => {result}")
         return result

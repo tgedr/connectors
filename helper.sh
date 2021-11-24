@@ -75,7 +75,7 @@ reqs()
 {
     info "[reqs|in]"
     python -m pip install --upgrade pip setuptools wheel build twine artifacts-keyring keyring bump2version pipreqs && \
-    python -m pip install astroid==2.5.2 pycodestyle==2.7.0 pyflakes==2.3.0 isort black autoflake pytest pytest-cov
+    python -m pip install astroid==2.5.2 pycodestyle==2.7.0 pyflakes==2.3.0 isort black autoflake pytest pytest-cov Faker
     return_value="$?"
     info "[reqs|out] => ${return_value}"
     [[ ! "$return_value" -eq "0" ]] && exit 1
@@ -123,7 +123,8 @@ publish()
 test()
 {
     info "[test|in]"
-    python -m pytest -vv --durations=0 --cov=src --junitxml=test-results.xml --cov-report=xml --cov-report=html
+
+    python -m pytest -vv --durations=0 --cov=src --junitxml=test-results.xml --cov-report=xml --cov-report=html "$1"
     return_value="$?"
     info "[test|out] => ${return_value}"
     [[ ! "$return_value" -eq "0" ]] && exit 1
@@ -162,7 +163,7 @@ case "$1" in
         esac
         ;;
     test)
-        test
+        test "$2"
         ;;
     create_requirements)
         create_requirements
