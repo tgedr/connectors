@@ -21,16 +21,17 @@ def delta_test_set():
 
     entries = []
     for i in range(DELTA_TEST_LENGTH):
-        entries.append({
-            "category": fake.random_element(elements=("rings", "bracelets", "earrings", "charms")),
-            "is_fallback": fake.boolean(chance_of_getting_true=80),
-            "probability": fake.random.random(),
-            "country": "US",
-            "model_rank": fake.random_element(elements=("champion", "wannabe", "crap")),
-            "extraction": datetime.datetime.now().timestamp(),
-            "model_version": 2.0,
-            "cookie_id": f"MCMID|00002812577406158014{numbers[i]}",
-        }
+        entries.append(
+            {
+                "category": fake.random_element(elements=("rings", "bracelets", "earrings", "charms")),
+                "is_fallback": fake.boolean(chance_of_getting_true=80),
+                "probability": fake.random.random(),
+                "country": "US",
+                "model_rank": fake.random_element(elements=("champion", "wannabe", "crap")),
+                "extraction": datetime.datetime.now().timestamp(),
+                "model_version": 2.0,
+                "cookie_id": f"MCMID|00002812577406158014{numbers[i]}",
+            }
         )
 
     return entries
@@ -61,6 +62,7 @@ def test_get_schemas():
     schemas = o.get_schemas()
     assert 0 <= schemas["count"]
 
+
 @pytest.mark.skip
 def test_get_record():
     """
@@ -75,6 +77,7 @@ def test_get_record():
         schema="next buy reco semi known users", record_id="MCMID|00002812577406158014239605433479468079"
     )
     assert 0 <= len(response["rows"])
+
 
 @pytest.mark.skip
 def test_post_record():
