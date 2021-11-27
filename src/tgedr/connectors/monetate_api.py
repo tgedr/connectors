@@ -138,7 +138,7 @@ class MonetateApi:
         logger.info(f"[MonetateApi.post_record] out length => {len(result['rows'])}")
         return result
 
-    def get_history(self, schema: str) -> List:
+    def get_history(self, schema: str) -> dict:
         logger.info(f"[MonetateApi.get_history] in ({schema})")
         result = None
         with self.__valid_token():

@@ -107,6 +107,7 @@ def test_get_history():
     o = MonetateApi(username=user, private_key=key)
     schema = "next buy reco semi known users"
     response = o.get_history(schema=schema)
+    assert "list" == type(response["data"]).__name__
     assert 0 <= len(response["data"])
 
 
