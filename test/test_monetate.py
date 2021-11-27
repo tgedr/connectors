@@ -98,14 +98,15 @@ def test_post_record():
 
 def test_get_history():
     """
-    this test is based on current 'next buy reco semi known users' dataset
+    this test is based on current 'next buy reco semi known users dev' dataset
     in  site 'dev.uk.pandora.net'
+    this should be skipped
     """
 
     key = os.environ["MONETATE_KEY"]
     user = os.environ.get("MONETATE_USER")
     o = MonetateApi(username=user, private_key=key)
-    schema = "next buy reco semi known users"
+    schema = "next buy reco semi known users dev"
     response = o.get_history(schema=schema)
     assert "list" == type(response["data"]).__name__
     assert 0 <= len(response["data"])
