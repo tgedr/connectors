@@ -1,1 +1,6 @@
 export MONETATE_USER="api-1047-aadevtest"
+export AZURE_TENANT_ID="d69819b1-740d-435a-8ff4-c41cdb1df926"
+export AZURE_CLIENT_ID="88def23d-5546-4943-916e-9df961a4110d"
+
+
+
