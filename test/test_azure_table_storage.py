@@ -21,7 +21,7 @@ def entity():
         "RowKey": str(random.randint(1, 999999)),
     }
 
-
+@pytest.mark.skip
 def test_insert(entity):
 
     o = AzureTableStorage(
@@ -32,7 +32,7 @@ def test_insert(entity):
     assert response["RowKey"] == entity["RowKey"]
     assert response["PartitionKey"] == entity["PartitionKey"]
 
-
+@pytest.mark.skip
 def test_get(entity):
 
     o = AzureTableStorage(
