@@ -24,17 +24,17 @@ class AzureTableStorage:
         self.__table = table
         logger.info("[AzureTableStorage.__init__|out]")
 
-    def __compute_signature(self, date: str, filter: str=None):
+    def __compute_signature(self, date: str, filter: str = None):
         logger.info(f"[AzureTableStorage.__compute_signature|in] ({date})")
         canonicalized_resources = f"/{self.__account}/{self.__table}"
         if filter:
             canonicalized_resources += filter
-        string_to_sign = date + '\n' + canonicalized_resources
-        result = base64.b64encode(hmac.new(
-            key=base64.b64decode(self.__key),
-            msg=string_to_sign.encode('utf-8'),
-            digestmod=hashlib.sha256
-        ).digest()).decode()
+        string_to_sign = date + "\n" + canonicalized_resources
+        result = base64.b64encode(
+            hmac.new(
+                key=base64.b64decode(self.__key), msg=string_to_sign.encode("utf-8"), digestmod=hashlib.sha256
+            ).digest()
+        ).decode()
         logger.info(f"[AzureTableStorage.__compute_signature|out] => {result}")
         return result
 
@@ -50,8 +50,8 @@ class AzureTableStorage:
             "x-ms-date": date,
             "x-ms-version": AzureTableStorage.__API_VERSION,
             "Authorization": f"SharedKeyLite {self.__account}:{signature}",
-            'Accept': 'application/json;odata=nometadata',
-            'Content-Type': 'application/json'
+            "Accept": "application/json;odata=nometadata",
+            "Content-Type": "application/json",
         }
 
         logger.info(f"[AzureTableStorage.insert] headers: {headers}")
@@ -71,11 +71,14 @@ class AzureTableStorage:
         if partition_key:
             filter_expression += f"PartitionKey='{partition_key}'"
         if row_key:
-            filter_expression += "," if 0<(len(filter_expression)) else ""
+            filter_expression += "," if 0 < (len(filter_expression)) else ""
             filter_expression += f"RowKey='{row_key}'"
         filter_expression = f"({filter_expression})"
 
-        uri = AzureTableStorage.__URI.replace("<ACCOUNT>", self.__account).replace("<TABLE>", self.__table) + filter_expression
+        uri = (
+            AzureTableStorage.__URI.replace("<ACCOUNT>", self.__account).replace("<TABLE>", self.__table)
+            + filter_expression
+        )
         date = datetime.datetime.utcnow().strftime("%a, %-d %b %Y %H:%M:%S GMT")
         signature = self.__compute_signature(date, filter_expression)
 
@@ -83,8 +86,8 @@ class AzureTableStorage:
             "x-ms-date": date,
             "x-ms-version": AzureTableStorage.__API_VERSION,
             "Authorization": f"SharedKeyLite {self.__account}:{signature}",
-            'Accept': 'application/json;odata=nometadata',
-            'Content-Type': 'application/json'
+            "Accept": "application/json;odata=nometadata",
+            "Content-Type": "application/json",
         }
         response = requests.get(url=uri, headers=headers)
         if not response.ok:
@@ -94,6 +97,3 @@ class AzureTableStorage:
 
         logger.info(f"[AzureTableStorage.get|out] => response: {result}")
         return result
-
-
-

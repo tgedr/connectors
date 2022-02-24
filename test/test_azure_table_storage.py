@@ -18,15 +18,15 @@ def entity():
         "name": "Edm.Guid",
         "id": "256",
         "PartitionKey": random.choice(["US", "IT", "DE"]),
-        "RowKey": str(random.randint(1, 999999))
+        "RowKey": str(random.randint(1, 999999)),
     }
 
 
 def test_insert(entity):
 
-    o = AzureTableStorage(storage_account=STORAGE_ACCOUNT,
-                          storage_account_key=os.environ["AZURE_STORAGE_ACCESS_KEY"],
-                          table=TABLE)
+    o = AzureTableStorage(
+        storage_account=STORAGE_ACCOUNT, storage_account_key=os.environ["AZURE_STORAGE_ACCESS_KEY"], table=TABLE
+    )
     response = o.insert(entity=entity)
 
     assert response["RowKey"] == entity["RowKey"]
@@ -35,9 +35,9 @@ def test_insert(entity):
 
 def test_get(entity):
 
-    o = AzureTableStorage(storage_account=STORAGE_ACCOUNT,
-                          storage_account_key=os.environ["AZURE_STORAGE_ACCESS_KEY"],
-                          table=TABLE)
+    o = AzureTableStorage(
+        storage_account=STORAGE_ACCOUNT, storage_account_key=os.environ["AZURE_STORAGE_ACCESS_KEY"], table=TABLE
+    )
     o.insert(entity=entity)
     response = o.get(partition_key=entity["PartitionKey"], row_key=entity["RowKey"])
 
